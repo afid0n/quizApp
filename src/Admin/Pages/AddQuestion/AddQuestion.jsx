@@ -1,21 +1,43 @@
 import React, { useState } from 'react';
-
+import controller from '../../../Services/API/request';
+import Swal from 'sweetalert2';
 const AddQuestion = () => {
-  const [questionTitle, setQuestionTitle] = useState('');
+  const [title, setQuestionTitle] = useState('');
   const [category, setCategory] = useState('');
-  const [difficultyLevel, setDifficultyLevel] = useState('');
-  const [answer, setAnswer] = useState('');
+  const [difficulty, setDifficultyLevel] = useState('');
+  const [answers, setAnswer] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const handleTitleChange = (e) => setQuestionTitle(e.target.value);
   const handleCategoryChange = (e) => setCategory(e.target.value);
   const handleLevelChange = (e) => setDifficultyLevel(e.target.value);
   const handleAnswerChange = (e) => setAnswer(e.target.value);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const newQuestion = { questionTitle, category, difficultyLevel, answer };
+    const newQuestion = { title, category, difficulty, answers };
 
-    console.log('New Question:', newQuestion);
+    setLoading(true);
+
+    const result = await controller.postOne('questions', newQuestion);
+    
+    if (result.data) {
+      Swal.fire({
+        position: "top-end",
+        icon: "success",
+        title: "Question added successfully",
+        showConfirmButton: false,
+        timer: 1500
+      });    } 
+      else {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "Something went wrong!",
+          footer: '<a href="#">Why do I have this issue?</a>'
+        });    }
+
+    setLoading(false);
 
     setQuestionTitle('');
     setCategory('');
@@ -37,7 +59,7 @@ const AddQuestion = () => {
             id="title"
             type="text"
             placeholder="Enter the question title"
-            value={questionTitle}
+            value={title}
             onChange={handleTitleChange}
             required
             className="w-full p-3 border border-gray-300 rounded-lg mt-2"
@@ -57,10 +79,10 @@ const AddQuestion = () => {
           >
             <option value="">Select a category</option>
             <option value="HTML">HTML</option>
-            <option value="JS">JS</option>
-            <option value="REACT">REACT</option>
+            <option value="JavaScript">JavaScript</option>
+            <option value="React">React</option>
             <option value="CSS">CSS</option>
-            <option value="GIT">GIT</option>
+            <option value="Git">Git</option>
             <option value="SCSS">SCSS</option>
           </select>
         </div>
@@ -71,15 +93,15 @@ const AddQuestion = () => {
           </label>
           <select
             id="level"
-            value={difficultyLevel}
+            value={difficulty}
             onChange={handleLevelChange}
             required
             className="w-full p-3 border border-gray-300 rounded-lg mt-2"
           >
             <option value="">Select a level</option>
-            <option value="Easy">Easy</option>
-            <option value="Medium">Medium</option>
-            <option value="Hard">Hard</option>
+            <option value="easy">easy</option>
+            <option value="medium">medium</option>
+            <option value="hard">hard</option>
           </select>
         </div>
 
@@ -90,7 +112,7 @@ const AddQuestion = () => {
           <textarea
             id="answer"
             placeholder="Enter the answer to the question"
-            value={answer}
+            value={answers}
             onChange={handleAnswerChange}
             required
             className="w-full p-3 border border-gray-300 rounded-lg mt-2"
@@ -111,8 +133,8 @@ const AddQuestion = () => {
           >
             Cancel
           </button>
-          <button type="submit" className="w-1/2 p-3 bg-black text-white rounded-lg">
-            Save Question
+          <button type="submit" className="w-1/2 p-3 bg-black text-white rounded-lg" disabled={loading}>
+            {loading ? 'Saving...' : 'Save Question'}
           </button>
         </div>
       </form>

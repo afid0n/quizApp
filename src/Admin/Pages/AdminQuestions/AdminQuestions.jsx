@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import controller from '../../../Services/API/request';
 import { NavLink } from 'react-router-dom';
+import Swal from 'sweetalert2';
+
 const Questions = () => {
   const [questions, setQuestions] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -11,7 +13,7 @@ const Questions = () => {
 
   useEffect(() => {
     const fetchQuestions = async () => {
-      const result = await controller.getAll('questions'); 
+      const result = await controller.getAll('questions');
       if (result.error) {
         setError(result.error);
       } else {
@@ -49,6 +51,42 @@ const Questions = () => {
   const handleLevelChange = (e) => {
     setSelectedLevel(e.target.value);
   };
+
+  const handleDelete = async (id) => {
+    try {
+      const result = await Swal.fire({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!',
+      });
+
+      if (result.isConfirmed) {
+        const deleteResponse = await controller.deleteOne('questions', id);
+
+        if (deleteResponse.data) {
+          setQuestions((prevQuestions) =>
+            prevQuestions.filter((question) => question.id !== id)
+          );
+
+          await Swal.fire({
+            title: 'Deleted!',
+            text: 'The question has been deleted.',
+            icon: 'success',
+          });
+        } else {
+          Swal.fire('Error!', 'Failed to delete the question.', 'error');
+        }
+      }
+    } catch (error) {
+      console.error('Error deleting question:', error);
+      Swal.fire('Error!', 'An error occurred while deleting the question.', 'error');
+    }
+  };
+  
 
   if (loading) {
     return <div>Loading...</div>;
@@ -123,9 +161,11 @@ const Questions = () => {
                 <td className="py-3 px-4 text-sm text-gray-700">
                   <div className="flex gap-10">
                     <button>
-                      <NavLink><i className="fa-solid fa-pen-to-square"></i></NavLink>
+                      <NavLink to={`/questions/edit/${question.id}`}>
+                        <i className="fa-solid fa-pen-to-square"></i>
+                      </NavLink>
                     </button>
-                    <button>
+                    <button onClick={() => handleDelete(question.id)}>
                       <i className="fa-solid fa-trash"></i>
                     </button>
                   </div>
