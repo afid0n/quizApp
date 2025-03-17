@@ -94,7 +94,7 @@ async function updateOne(endpoint,id,payload) {
       error: null,
     };
     await axios
-      .patch(API_BASE_URL + endpoint + `/${id}`, payload)
+      .put(API_BASE_URL + endpoint + `/${id}`, payload)
       .then((response) => {
         console.log("axios response: ", response);
         result.data = response.data;

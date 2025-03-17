@@ -161,7 +161,7 @@ const Questions = () => {
                 <td className="py-3 px-4 text-sm text-gray-700">
                   <div className="flex gap-10">
                     <button>
-                      <NavLink to={`/questions/edit/${question.id}`}>
+                      <NavLink to={`/admin/questions/${question.id}`}>
                         <i className="fa-solid fa-pen-to-square"></i>
                       </NavLink>
                     </button>

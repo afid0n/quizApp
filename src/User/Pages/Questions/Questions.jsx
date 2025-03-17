@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import controller from '../../../Services/API/request';
+import { Link } from 'react-router-dom';
 
 const Questions = () => {
   const [questions, setQuestions] = useState([]);
@@ -37,9 +38,12 @@ const Questions = () => {
   };
 
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <p className="text-lg font-semibold">Loading...</p>
+      </div>
+    );
   }
-
   if (error) {
     return <div>Error fetching questions: {error.message}</div>;
   }
@@ -80,7 +84,8 @@ const Questions = () => {
                 {shownAnswers[question.id]?.buttonText || 'Show Answer'}
               </button>
               <button className="border rounded py-2 px-4 rounded-lg">
-                View Details
+                <Link to={`/questions/${question.id}`}>View Details</Link>
+                
               </button>
             </div>
           </div>

@@ -8,8 +8,10 @@ import Admin from '../Admin/Admin'
 import Details from '../User/Pages/Details/Details'
 import AddQuestion from '../Admin/Pages/AddQuestion/AddQuestion'
 import AdminQuestions from '../Admin/Pages/AdminQuestions/AdminQuestions'
-// import ProtectedRouted from '../Components/ProtectedRoute/ProtectedRoute'
+import ProtectedRouted from '../Components/ProtectedRoute/ProtectedRoute'
 import Dashboard from '../Admin/Pages/Dashboard/Dashboard'
+import Login from '../User/Pages/Login/Login'
+import EditQuestion from '../Admin/Pages/EditQuestion/EditQuestion'
 
 const Routes = [
     {
@@ -40,6 +42,10 @@ const Routes = [
             {
                 path: "*",
                 element: <NotFound />
+            },
+            {
+                path: "login",
+                element: <Login />
             }
         ]
     },
@@ -48,28 +54,33 @@ const Routes = [
         element: <Admin />,
         children: [
             {
-                index:true,
+                index: true,
                 element: (
-                    // <ProtectedRouted>
-                        <Dashboard />
-                    // </ProtectedRouted>
+                     <ProtectedRouted>
+                    <Dashboard />
+                    </ProtectedRouted>
                 ),
             },
             {
-                path:"add-question",
-                element:(
-                    // <ProtectedRouted>
-                        <AddQuestion/>
-                    // </ProtectedRouted>
+                path: "add-question",
+                element: (
+                    <ProtectedRouted>
+                    <AddQuestion />
+                     </ProtectedRouted>
                 )
             },
             {
-                path:"questions",
-                element:(
-                    // <ProtectedRouted>
-                        <AdminQuestions/>
-                    // </ProtectedRouted>
-                )
+                path: "questions",
+                children: [
+                    {
+                        index: true,
+                        element:<AdminQuestions/>
+                    },
+                    {
+                        path:":id",
+                        element:<EditQuestion/>
+                    }
+                ]
             }
         ]
     }

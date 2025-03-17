@@ -8,7 +8,7 @@ const ProtectedRouted = ({ children }) => {
   console.log("is admin: ", isAdmin);
 
   if (loading) return <div>Loading...</div>; 
-  if (!isAdmin) return <Navigate to="/admin/login" />;
+  if (!isAdmin) return <Navigate to="/login" />;
   return children;
 };
 
